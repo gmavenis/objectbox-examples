@@ -1,4 +1,4 @@
-package io.objectbox.example.kotlin.demo
+package io.objectbox.example.kotlin
 
 import android.app.Activity
 import android.os.Bundle
