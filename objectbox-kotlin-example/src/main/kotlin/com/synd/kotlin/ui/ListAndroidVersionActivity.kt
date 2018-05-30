@@ -62,17 +62,20 @@ class ListAndroidVersionActivity : AppCompatActivity() {
 
     private fun handleSuccessAndroidVersion(result: List<AndroidVersion>) {
         loading?.cancel()
-        val listener = AdapterItemClickListener {
+        mAdapter = AndroidVersionAdapter(result, object : AdapterItemClickListener {
             override fun onItemClick(androidVersion: AndroidVersion) {
-                //Your code here
+                toast(androidVersion?.toString())
             }
-        }
-        mAdapter = AndroidVersionAdapter(result, listener)
+        })
         mRecyclerView.adapter = mAdapter
     }
 
     private fun handlerErrorAndroidVersion(error: Throwable) {
         loading?.cancel()
-        Toast.makeText(this, "Error ${error.localizedMessage}", Toast.LENGTH_SHORT).show()
+        toast("Error ${error.localizedMessage}")
+    }
+
+    private fun toast(s: String) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
     }
 }

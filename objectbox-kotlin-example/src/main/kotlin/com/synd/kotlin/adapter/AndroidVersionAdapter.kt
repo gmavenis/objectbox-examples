@@ -24,17 +24,17 @@ class AndroidVersionAdapter(private val androidVersionList: List<AndroidVersion>
 
     class ViewHolder(val view: View, val listener: AdapterItemClickListener) : RecyclerView.ViewHolder(view) {
 
-        fun bind(android: AndroidVersion) {
+        fun bind(androidVersion: AndroidVersion) {
             val tvName = view.findViewById<TextView>(R.id.tv_name)
             val tvVersion = view.findViewById<TextView>(R.id.tv_version)
             val tvApiLevel = view.findViewById<TextView>(R.id.tv_api_level)
-            tvName.text = android.name
-            tvVersion.text = android.ver
-            tvApiLevel.text = android.api
+            tvName.text = androidVersion.name
+            tvVersion.text = androidVersion.ver
+            tvApiLevel.text = androidVersion.api
 
             view.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
-                    listener?.onItemClick(android)
+                    listener?.onItemClick(androidVersion)
                 }
             })
         }
