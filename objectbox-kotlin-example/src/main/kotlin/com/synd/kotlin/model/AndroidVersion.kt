@@ -5,8 +5,8 @@ data class AndroidVersion(val name: String,
                           val api: String) {
     override fun toString(): String {
         return StringBuilder()
-                .append(name).append("\t")
-                .append(ver).append("\t")
+                .append(name).append(", ")
+                .append(ver).append(", ")
                 .append(api).toString()
     }
 }
