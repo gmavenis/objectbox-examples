@@ -1,6 +1,5 @@
 package com.synd.kotlin.api
 
-import com.synd.kotlin.db.Constants
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -10,17 +9,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class Repository {
     companion object {
-        private var retrofit: Retrofit? = null
-        private var builder: Retrofit.Builder = Retrofit.Builder().baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        private lateinit var retrofit: Retrofit
+        private lateinit var builder: Retrofit.Builder
         private val httpClient = OkHttpClient.Builder()
 
-        fun <S> createService(serviceClass: Class<S>): S {
-            return createService(serviceClass, null)
+        fun <S> createService(serviceClass: Class<S>, host: String): S {
+            return createService(serviceClass, host, null)
         }
 
-        fun <S> createService(serviceClass: Class<S>, authToken: Map<String, String>?): S {
+        fun <S> createService(serviceClass: Class<S>, host: String, authToken: Map<String, String>?): S {
             if (authToken != null) {
                 var interceptor = AuthenticationInterceptor(authToken!!)
                 if (interceptor !in httpClient.interceptors()) {
@@ -29,6 +26,9 @@ class Repository {
                     retrofit = builder.build()
                 }
             }
+            builder = Retrofit.Builder().baseUrl(host)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             retrofit = builder.build()
             return retrofit!!.create(serviceClass)
         }

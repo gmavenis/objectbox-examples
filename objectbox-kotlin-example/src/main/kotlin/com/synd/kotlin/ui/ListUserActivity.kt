@@ -8,19 +8,19 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 import com.synd.kotlin.adapter.AdapterItemClickListener
-import com.synd.kotlin.adapter.AndroidVersionAdapter
+import com.synd.kotlin.adapter.UserAdapter
 import com.synd.kotlin.api.ApiService
 import com.synd.kotlin.api.Repository
 import com.synd.kotlin.db.Constants
-import com.synd.kotlin.model.AndroidVersion
+import com.synd.kotlin.model.UserModel
 import io.objectbox.example.kotlin.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class ListAndroidVersionActivity : AppCompatActivity() {
+class ListUserActivity : AppCompatActivity() {
 
-    private val TAG = ListAndroidVersionActivity::class.java.simpleName
-    private lateinit var mAdapter: AndroidVersionAdapter
+    private val TAG = ListUserActivity::class.java.simpleName
+    private lateinit var mAdapter: UserAdapter
     private lateinit var mRecyclerView: RecyclerView
 
     @Suppress("DEPRECATION")
@@ -48,8 +48,8 @@ class ListAndroidVersionActivity : AppCompatActivity() {
 
     private fun requestApi() {
         loading?.show()
-        Repository.createService(ApiService::class.java, Constants.BASE_URL)
-                .getAndroidVersion()
+        Repository.createService(ApiService::class.java, Constants.USER_LIST_URL)
+                .getUserList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -62,11 +62,11 @@ class ListAndroidVersionActivity : AppCompatActivity() {
                 )
     }
 
-    private fun handleSuccess(result: List<AndroidVersion>) {
+    private fun handleSuccess(result: List<UserModel>) {
         loading?.cancel()
-        mAdapter = AndroidVersionAdapter(result, object : AdapterItemClickListener {
+        mAdapter = UserAdapter(result, object : AdapterItemClickListener {
             override fun onItemClick(model: Any?) {
-                toast((model as AndroidVersion)?.toString())
+                toast((model as UserModel)?.toString())
             }
         })
         mRecyclerView.adapter = mAdapter

@@ -1,13 +1,12 @@
-package io.objectbox.example.kotlin
+package com.synd.kotlin.ui
 
 import android.app.Application
 import android.os.Environment
-
+import io.objectbox.BoxStore
+import io.objectbox.example.kotlin.MyObjectBox
 import java.io.File
 
-import io.objectbox.BoxStore
-
-class App : Application() {
+class OBApplication : Application() {
 
     companion object Constants {
         const val TAG = "ObjectBoxDemo"

@@ -26,9 +26,57 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:5618036499366475693",
+      "lastPropertyId": "4:317372590440601634",
+      "name": "ScoreEntity",
+      "properties": [
+        {
+          "id": "1:3828033082037151319",
+          "name": "id"
+        },
+        {
+          "id": "2:5670681494979146822",
+          "name": "uid"
+        },
+        {
+          "id": "3:2548885257840431880",
+          "name": "subject"
+        },
+        {
+          "id": "4:317372590440601634",
+          "name": "score"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:66347149030315726",
+      "lastPropertyId": "4:6382788836336616320",
+      "name": "UserEntity",
+      "properties": [
+        {
+          "id": "1:1070597454561757839",
+          "name": "id"
+        },
+        {
+          "id": "2:5375435474820630531",
+          "name": "uid"
+        },
+        {
+          "id": "3:5684547245910461184",
+          "name": "name"
+        },
+        {
+          "id": "4:6382788836336616320",
+          "name": "age"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:6645479796472661392",
+  "lastEntityId": "3:66347149030315726",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
