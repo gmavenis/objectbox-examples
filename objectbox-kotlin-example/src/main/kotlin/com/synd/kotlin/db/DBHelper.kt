@@ -35,8 +35,13 @@ class DBHelper(val application: OBApplication, val activity: AppCompatActivity, 
     fun getAllUser(): List<UserModel> {
         val result = mutableListOf<UserModel>()
         userQuery.find().forEach() {
+            val scores = scoreBox.query().equal(ScoreEntity_.uid, it.uid!!).order(ScoreEntity_.subject).build().find()
+            val list = mutableListOf<ScoreModel>()
+            scores.forEach {
+                list.add(it.toModel())
+            }
             val userModel = it.toModel()
-            userModel.scores = scoreBox.query().equal(ScoreEntity_.uid, it.uid!!).order(ScoreEntity_.subject).build().find() as List<ScoreModel>
+            userModel.scores = list
             result.add(userModel)
         }
         return result
