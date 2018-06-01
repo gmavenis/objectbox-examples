@@ -17,5 +17,7 @@
     <string name="scores">Scores:</string>
     <string name="score">Score</string>
     <string name="please_input_all_fields">Please input all fields</string>
+    <string name="new_user_added">New user added!</string>
+    <string name="user_updated">User updated!</string>
 
 </resources>

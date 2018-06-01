@@ -104,6 +104,8 @@ class ListUserActivity : AppCompatActivity() {
                                     dbHelper.putScore(newScoreEntity1)
                                     dbHelper.putScore(newScoreEntity2)
 
+                                    toast(if (userModel == null) R.string.new_user_added else R.string.user_updated)
+
                                     getLocalData()
                                 }
                             }
@@ -138,12 +140,16 @@ class ListUserActivity : AppCompatActivity() {
     }
 
     private fun setData(result: List<UserModel>) {
-        mAdapter = UserAdapter(result, object : AdapterItemClickListener {
-            override fun onItemClick(model: Any?) {
-                showDialogUser(model as UserModel)
-            }
-        })
-        mRecyclerView.adapter = mAdapter
+        if (!::mAdapter.isInitialized) {
+            mAdapter = UserAdapter(result, object : AdapterItemClickListener {
+                override fun onItemClick(model: Any?) {
+                    showDialogUser(model as UserModel)
+                }
+            })
+            mRecyclerView.adapter = mAdapter
+        } else {
+            mAdapter.setData(result)
+        }
     }
 
     private fun getLocalData() {

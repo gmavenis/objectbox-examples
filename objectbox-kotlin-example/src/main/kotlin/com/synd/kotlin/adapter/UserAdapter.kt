@@ -8,8 +8,13 @@ import android.widget.TextView
 import com.synd.kotlin.model.UserModel
 import io.objectbox.example.kotlin.R
 
-class UserAdapter(private val userList: List<UserModel>, private val listener: AdapterItemClickListener)
+class UserAdapter(private var userList: List<UserModel>, private val listener: AdapterItemClickListener)
     : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
+
+    fun setData(userList: List<UserModel>) {
+        this.userList = userList
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
@@ -29,7 +34,7 @@ class UserAdapter(private val userList: List<UserModel>, private val listener: A
             val tvAge = view.findViewById<TextView>(R.id.tv_age)
             val tvScores = view.findViewById<TextView>(R.id.tv_scores)
             tvName.text = userModel.name
-            tvAge.text = "  -  " + userModel.age?.toString()
+            tvAge.text = "  -  " + userModel.age?.toString() + " yrs"
             tvScores.text = userModel.scoresToString()
 
             view.setOnClickListener(object : View.OnClickListener {
