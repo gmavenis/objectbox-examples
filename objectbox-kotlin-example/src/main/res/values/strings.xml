@@ -16,5 +16,6 @@
     <string name="age">Age</string>
     <string name="scores">Scores:</string>
     <string name="score">Score</string>
+    <string name="please_input_all_fields">Please input all fields</string>
 
 </resources>

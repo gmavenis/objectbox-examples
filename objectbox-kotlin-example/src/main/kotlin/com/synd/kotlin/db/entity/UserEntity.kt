@@ -12,6 +12,6 @@ data class UserEntity(
         var age: Int? = null) {
 
     fun toModel(): UserModel {
-        return UserModel(uid, name, age, null)
+        return UserModel(id, uid, name, age, null)
     }
 }

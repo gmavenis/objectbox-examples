@@ -12,6 +12,6 @@ data class ScoreEntity(
         var score: Int? = null) {
 
     fun toModel(): ScoreModel {
-        return ScoreModel(subject, score)
+        return ScoreModel(id, subject, score)
     }
 }

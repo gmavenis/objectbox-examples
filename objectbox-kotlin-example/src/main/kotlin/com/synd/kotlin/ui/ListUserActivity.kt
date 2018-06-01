@@ -48,24 +48,23 @@ class ListUserActivity : AppCompatActivity() {
     }
 
     private fun showDialogUser(userModel: UserModel?) {
+        var etName: TextInputEditText?
+        var etAge: TextInputEditText?
+        var etScore1: TextInputEditText?
+        var etScore2: TextInputEditText?
+
         val dialog = AlertDialog.Builder(this)
                 .setTitle(if (userModel == null) R.string.add_user else R.string.edit_user)
                 .setView(R.layout.dialog_add_user)
-                .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                    }
-                })
-                .setNegativeButton(R.string.cancel, object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
-                    }
-                })
+                .setPositiveButton(R.string.ok, null)
+                .setNegativeButton(R.string.cancel, null)
                 .create()
         dialog.setOnShowListener(object : DialogInterface.OnShowListener {
             override fun onShow(p0: DialogInterface?) {
-                val etName = dialog.findViewById<TextInputEditText>(R.id.et_name)
-                val etAge = dialog.findViewById<TextInputEditText>(R.id.et_age)
-                val etScore1 = dialog.findViewById<TextInputEditText>(R.id.et_score_1)
-                val etScore2 = dialog.findViewById<TextInputEditText>(R.id.et_score_2)
+                etName = dialog.findViewById<TextInputEditText>(R.id.et_name)
+                etAge = dialog.findViewById<TextInputEditText>(R.id.et_age)
+                etScore1 = dialog.findViewById<TextInputEditText>(R.id.et_score_1)
+                etScore2 = dialog.findViewById<TextInputEditText>(R.id.et_score_2)
 
                 etName?.setText(userModel?.name)
                 etAge?.setText(userModel?.age?.toString())
@@ -73,6 +72,49 @@ class ListUserActivity : AppCompatActivity() {
                     etScore1?.setText(userModel?.scores?.get(0)?.score.toString())
                     etScore2?.setText(userModel?.scores?.get(1)?.score.toString())
                 }
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(p0: View?) {
+                                if (etName?.length() == 0
+                                        || etAge?.length() == 0
+                                        || etScore1?.length() == 0
+                                        || etScore2?.length() == 0) {
+                                    toast(R.string.please_input_all_fields)
+                                } else {
+                                    dialog.cancel()
+
+                                    val newUserEntity = UserEntity(userModel?.id ?: 0L,
+                                            userModel?.uid ?: mAdapter?.itemCount?.toLong(),
+                                            etName?.text?.toString(),
+                                            etAge?.text?.toString()?.toInt())
+                                    dbHelper.putUser(newUserEntity)
+
+                                    val newScoreEntity1 = ScoreEntity(userModel?.scores?.get(0)?.id
+                                            ?: 0L,
+                                            newUserEntity.uid,
+                                            "English",
+                                            etScore1?.text?.toString()?.toInt())
+                                    val newScoreEntity2 = ScoreEntity(userModel?.scores?.get(1)?.id
+                                            ?: 0L,
+                                            newUserEntity.uid,
+                                            "Math",
+                                            etScore2?.text?.toString()?.toInt())
+
+                                    dbHelper.putScore(newScoreEntity1)
+                                    dbHelper.putScore(newScoreEntity2)
+
+                                    getLocalData()
+                                }
+                            }
+                        })
+
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        .setOnClickListener(object : View.OnClickListener {
+                            override fun onClick(p0: View?) {
+                                dialog.cancel()
+                            }
+                        })
             }
         })
         dialog.show()
@@ -151,5 +193,9 @@ class ListUserActivity : AppCompatActivity() {
 
     private fun toast(s: String) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun toast(id: Int) {
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show()
     }
 }
