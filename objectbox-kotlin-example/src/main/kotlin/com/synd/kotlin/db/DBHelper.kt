@@ -1,19 +1,19 @@
 package com.synd.kotlin.db
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import com.synd.kotlin.db.entity.ScoreEntity
 import com.synd.kotlin.db.entity.ScoreEntity_
 import com.synd.kotlin.db.entity.UserEntity
 import com.synd.kotlin.db.entity.UserEntity_
+import com.synd.kotlin.model.ScoreModel
+import com.synd.kotlin.model.UserModel
 import com.synd.kotlin.ui.OBApplication
 import com.synd.kotlin.viewmodel.BaseViewModel
 import io.objectbox.Box
 import io.objectbox.kotlin.boxFor
 import io.objectbox.query.Query
 
-class DBHelper(val application: OBApplication, val activity: AppCompatActivity, val listener: OnDataChangedListener<UserEntity>) {
+class DBHelper(val application: OBApplication, val activity: AppCompatActivity, val listener: OnDataChangedListener<UserEntity>?) {
 
     private lateinit var userBox: Box<UserEntity>
     private lateinit var userQuery: Query<UserEntity>
@@ -30,16 +30,28 @@ class DBHelper(val application: OBApplication, val activity: AppCompatActivity, 
 
         scoreBox = application.boxStore.boxFor<ScoreEntity>()
         scoreQuery = scoreBox.query().order(ScoreEntity_.subject).build()
-
-        userViewModel = ViewModelProviders.of(activity).get(BaseViewModel::class.java)
-        userViewModel.getLiveData(userQuery).observe(activity, object : Observer<List<UserEntity>> {
-            override fun onChanged(t: List<UserEntity>?) {
-                listener?.onChanged(t)
-            }
-        })
     }
 
-    fun getAllUser() {
-        userQuery.find()
+    fun getAllUser(): List<UserModel> {
+        val result = mutableListOf<UserModel>()
+        userQuery.find().forEach() {
+            val userModel = it.toModel()
+            userModel.scores = scoreBox.query().equal(ScoreEntity_.uid, it.uid!!).order(ScoreEntity_.subject).build().find() as List<ScoreModel>
+            result.add(userModel)
+        }
+        return result
+    }
+
+    fun putUser(userEntity: UserEntity) {
+        userBox.put(userEntity)
+    }
+
+    fun putScore(scoreEntity: ScoreEntity) {
+        scoreBox.put(scoreEntity)
+    }
+
+    fun clearAll() {
+        scoreBox.removeAll()
+        userBox.removeAll()
     }
 }

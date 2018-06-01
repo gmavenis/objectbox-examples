@@ -7,5 +7,7 @@
     <string name="click_to_remove">Click a note to remove it</string>
 
     <string name="loading">Loading...</string>
+    <string name="add_user">Add user</string>
+    <string name="fetch_data">Fetch data</string>
 
 </resources>

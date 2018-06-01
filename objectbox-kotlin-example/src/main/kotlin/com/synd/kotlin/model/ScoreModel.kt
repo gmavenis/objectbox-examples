@@ -1,10 +1,10 @@
 package com.synd.kotlin.model
 
 class ScoreModel {
-    var subject: String
-    var score: Int
+    var subject: String?
+    var score: Int?
 
-    constructor(subject: String, score: Int) {
+    constructor(subject: String?, score: Int?) {
         this.subject = subject
         this.score = score
     }

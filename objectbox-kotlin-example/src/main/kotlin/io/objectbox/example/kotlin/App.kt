@@ -2,6 +2,7 @@ package io.objectbox.example.kotlin
 
 import android.app.Application
 import android.os.Environment
+import com.synd.kotlin.db.entity.MyObjectBox
 
 import java.io.File
 

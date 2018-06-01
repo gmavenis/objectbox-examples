@@ -3,13 +3,13 @@ package com.synd.kotlin.model
 import com.google.gson.annotations.SerializedName
 
 class UserModel {
-    var uid: Long
-    var name: String
-    var age: Int
+    var uid: Long?
+    var name: String?
+    var age: Int?
     @SerializedName("scores")
-    var scores: List<ScoreModel>
+    var scores: List<ScoreModel>?
 
-    constructor(uid: Long, name: String, age: Int, scores: List<ScoreModel>) {
+    constructor(uid: Long?, name: String?, age: Int?, scores: List<ScoreModel>?) {
         this.uid = uid
         this.name = name
         this.age = age

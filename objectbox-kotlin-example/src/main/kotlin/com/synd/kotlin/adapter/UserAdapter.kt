@@ -29,7 +29,7 @@ class UserAdapter(private val userList: List<UserModel>, private val listener: A
             val tvAge = view.findViewById<TextView>(R.id.tv_age)
             val tvScores = view.findViewById<TextView>(R.id.tv_scores)
             tvName.text = userModel.name
-            tvAge.text = userModel.age?.toString()
+            tvAge.text = "  -  " + userModel.age?.toString()
             tvScores.text = userModel.scoresToString()
 
             view.setOnClickListener(object : View.OnClickListener {

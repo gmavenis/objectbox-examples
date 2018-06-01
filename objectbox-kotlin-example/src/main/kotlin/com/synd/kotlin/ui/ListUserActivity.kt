@@ -6,12 +6,16 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.widget.Toast
 import com.synd.kotlin.adapter.AdapterItemClickListener
 import com.synd.kotlin.adapter.UserAdapter
 import com.synd.kotlin.api.ApiService
 import com.synd.kotlin.api.Repository
 import com.synd.kotlin.db.Constants
+import com.synd.kotlin.db.DBHelper
+import com.synd.kotlin.db.entity.ScoreEntity
+import com.synd.kotlin.db.entity.UserEntity
 import com.synd.kotlin.model.UserModel
 import io.objectbox.example.kotlin.R
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +26,7 @@ class ListUserActivity : AppCompatActivity() {
     private val TAG = ListUserActivity::class.java.simpleName
     private lateinit var mAdapter: UserAdapter
     private lateinit var mRecyclerView: RecyclerView
+    private lateinit var dbHelper: DBHelper
 
     @Suppress("DEPRECATION")
     private lateinit var loading: ProgressDialog
@@ -30,6 +35,13 @@ class ListUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_view)
         initView()
+        getLocalData()
+    }
+
+    fun addUser(view: View) {
+    }
+
+    fun fetchData(view: View) {
         requestApi()
     }
 
@@ -44,6 +56,17 @@ class ListUserActivity : AppCompatActivity() {
         mRecyclerView.setHasFixedSize(true)
         mRecyclerView.layoutManager = layoutManager
         mRecyclerView.addItemDecoration(divider)
+    }
+
+    private fun getLocalData() {
+        dbHelper = DBHelper(application as OBApplication, this, null)
+        val result = dbHelper.getAllUser()
+        mAdapter = UserAdapter(result, object : AdapterItemClickListener {
+            override fun onItemClick(model: Any?) {
+                toast((model as UserModel)?.toString())
+            }
+        })
+        mRecyclerView.adapter = mAdapter
     }
 
     private fun requestApi() {
@@ -64,6 +87,14 @@ class ListUserActivity : AppCompatActivity() {
 
     private fun handleSuccess(result: List<UserModel>) {
         loading?.cancel()
+        dbHelper.clearAll()
+        result?.forEach {
+            val uid = it.uid
+            dbHelper.putUser(UserEntity(0, uid, it.name, it.age))
+            it.scores?.forEach {
+                dbHelper.putScore(ScoreEntity(0, uid, it.subject, it.score))
+            }
+        }
         mAdapter = UserAdapter(result, object : AdapterItemClickListener {
             override fun onItemClick(model: Any?) {
                 toast((model as UserModel)?.toString())

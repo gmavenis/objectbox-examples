@@ -2,8 +2,8 @@ package com.synd.kotlin.ui
 
 import android.app.Application
 import android.os.Environment
+import com.synd.kotlin.db.entity.MyObjectBox
 import io.objectbox.BoxStore
-import io.objectbox.example.kotlin.MyObjectBox
 import java.io.File
 
 class OBApplication : Application() {
