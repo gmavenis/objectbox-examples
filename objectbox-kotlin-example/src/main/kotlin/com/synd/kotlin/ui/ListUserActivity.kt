@@ -85,7 +85,7 @@ class ListUserActivity : AppCompatActivity() {
                                     dialog.cancel()
 
                                     val newUserEntity = UserEntity(userModel?.id ?: 0L,
-                                            userModel?.uid ?: mAdapter?.itemCount?.toLong(),
+                                            userModel?.uid ?: mAdapter?.itemCount?.toLong()+1L,
                                             etName?.text?.toString(),
                                             etAge?.text?.toString()?.toInt())
                                     dbHelper.putUser(newUserEntity)
