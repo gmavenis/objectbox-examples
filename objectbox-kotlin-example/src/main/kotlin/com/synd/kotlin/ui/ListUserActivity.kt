@@ -103,10 +103,13 @@ class ListUserActivity : AppCompatActivity() {
 
                                     dbHelper.putScore(newScoreEntity1)
                                     dbHelper.putScore(newScoreEntity2)
+                                    
+                                    getLocalData()
 
                                     toast(if (userModel == null) R.string.new_user_added else R.string.user_updated)
-
-                                    getLocalData()
+                                    if (userModel == null) {
+                                        mRecyclerView?.smoothScrollToPosition(mAdapter?.itemCount)
+                                    }
                                 }
                             }
                         })
