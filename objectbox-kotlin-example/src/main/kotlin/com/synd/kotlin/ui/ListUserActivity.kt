@@ -1,7 +1,10 @@
 package com.synd.kotlin.ui
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.design.widget.TextInputEditText
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -16,10 +19,12 @@ import com.synd.kotlin.db.Constants
 import com.synd.kotlin.db.DBHelper
 import com.synd.kotlin.db.entity.ScoreEntity
 import com.synd.kotlin.db.entity.UserEntity
+import com.synd.kotlin.model.ScoreModel
 import com.synd.kotlin.model.UserModel
 import io.objectbox.example.kotlin.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class ListUserActivity : AppCompatActivity() {
 
@@ -39,6 +44,38 @@ class ListUserActivity : AppCompatActivity() {
     }
 
     fun addUser(view: View) {
+        showDialogUser(null)
+    }
+
+    private fun showDialogUser(userModel: UserModel?) {
+        val dialog = AlertDialog.Builder(this)
+                .setTitle(if (userModel == null) R.string.add_user else R.string.edit_user)
+                .setView(R.layout.dialog_add_user)
+                .setPositiveButton(R.string.ok, object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                    }
+                })
+                .setNegativeButton(R.string.cancel, object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                    }
+                })
+                .create()
+        dialog.setOnShowListener(object : DialogInterface.OnShowListener {
+            override fun onShow(p0: DialogInterface?) {
+                val etName = dialog.findViewById<TextInputEditText>(R.id.et_name)
+                val etAge = dialog.findViewById<TextInputEditText>(R.id.et_age)
+                val etScore1 = dialog.findViewById<TextInputEditText>(R.id.et_score_1)
+                val etScore2 = dialog.findViewById<TextInputEditText>(R.id.et_score_2)
+
+                etName?.setText(userModel?.name)
+                etAge?.setText(userModel?.age?.toString())
+                if (userModel != null && userModel?.scores?.size?.equals(2)!!) {
+                    etScore1?.setText(userModel?.scores?.get(0)?.score.toString())
+                    etScore2?.setText(userModel?.scores?.get(1)?.score.toString())
+                }
+            }
+        })
+        dialog.show()
     }
 
     fun fetchData(view: View) {
@@ -58,15 +95,19 @@ class ListUserActivity : AppCompatActivity() {
         mRecyclerView.addItemDecoration(divider)
     }
 
-    private fun getLocalData() {
-        dbHelper = DBHelper(application as OBApplication, this, null)
-        val result = dbHelper.getAllUser()
+    private fun setData(result: List<UserModel>) {
         mAdapter = UserAdapter(result, object : AdapterItemClickListener {
             override fun onItemClick(model: Any?) {
-                toast((model as UserModel)?.toString())
+                showDialogUser(model as UserModel)
             }
         })
         mRecyclerView.adapter = mAdapter
+    }
+
+    private fun getLocalData() {
+        dbHelper = DBHelper(application as OBApplication, this, null)
+        val result = dbHelper.getAllUser()
+        setData(result)
     }
 
     private fun requestApi() {
@@ -91,16 +132,16 @@ class ListUserActivity : AppCompatActivity() {
         result?.forEach {
             val uid = it.uid
             dbHelper.putUser(UserEntity(0, uid, it.name, it.age))
+            Collections.sort(it.scores, object : Comparator<ScoreModel> {
+                override fun compare(p0: ScoreModel?, p1: ScoreModel?): Int {
+                    return p0?.subject!!.compareTo(p1?.subject!!)
+                }
+            })
             it.scores?.forEach {
                 dbHelper.putScore(ScoreEntity(0, uid, it.subject, it.score))
             }
         }
-        mAdapter = UserAdapter(result, object : AdapterItemClickListener {
-            override fun onItemClick(model: Any?) {
-                toast((model as UserModel)?.toString())
-            }
-        })
-        mRecyclerView.adapter = mAdapter
+        setData(result)
     }
 
     private fun handlerError(error: Throwable) {
